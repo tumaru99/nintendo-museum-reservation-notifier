@@ -1,0 +1,27 @@
+{
+  "name": "nintendo-museum-reservation-notifier",
+  "productName": "Nintendo Museum Reservation Notifier",
+  "version": "0.1.0",
+  "description": "A tool designed to help users book Nintendo Museum.",
+  "main": "main.js",
+  "repository": "https://github.com/zhxie/nintendo-museum-reservation-notifier",
+  "author": "Sketch",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
+    "electron": "^30.0.8"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true,
+        "icon": "assets/icon"
+      }
+    }
+  }
+}

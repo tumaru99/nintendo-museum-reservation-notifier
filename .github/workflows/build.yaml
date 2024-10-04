@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-14, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-node-modules-
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn package
+
+      - name: Package
+        run: |
+          mkdir build
+          mv out/*/* build/
+          mv build/LICENSE build/LICENSE.electron
+          cp LICENSE build/LICENSE
+
+      - name: Preserve permissions
+        if: runner.os != 'Windows'
+        run: |
+          tar -cvf build.tar build/
+          rm -r build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nintendo-museum-reservation-notifier-${{ runner.os }}
+          path: |
+            build.tar
+            build/
